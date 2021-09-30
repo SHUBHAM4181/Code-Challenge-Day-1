@@ -1,0 +1,429 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "Untitled5.ipynb",
+      "provenance": [],
+      "authorship_tag": "ABX9TyMFVDlYj1zYuB45j90B96bG",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/SHUBHAM4181/Code-Challenge-Day-1/blob/master/iris%20using%20tree\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "Yll9w9xe9eIr"
+      },
+      "source": [
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "import seaborn as sns\n",
+        "import matplotlib.pyplot as plt\n",
+        "from sklearn.datasets import load_iris # importing this to load our dataset itself\n",
+        "from sklearn.tree import DecisionTreeClassifier, plot_tree # importing this class for classfying using Decision Tree.\n",
+        "from sklearn.model_selection import GridSearchCV"
+      ],
+      "execution_count": 7,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "mC66Pvvh_9_y"
+      },
+      "source": [
+        "# data =load_iris() # already loads the dataset from scikit lib where we imported load_iris\n",
+        "data = pd.read_csv('iris.csv')"
+      ],
+      "execution_count": 8,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 206
+        },
+        "id": "bNWUSHv4AFJz",
+        "outputId": "4425fae1-682b-42a9-af08-057fac4b728c"
+      },
+      "source": [
+        "data.head()"
+      ],
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>sepal_len</th>\n",
+              "      <th>sepal_wid</th>\n",
+              "      <th>petal_len</th>\n",
+              "      <th>petal_wid</th>\n",
+              "      <th>species</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>5.1</td>\n",
+              "      <td>3.5</td>\n",
+              "      <td>1.4</td>\n",
+              "      <td>0.2</td>\n",
+              "      <td>Iris-setosa</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>4.9</td>\n",
+              "      <td>3.0</td>\n",
+              "      <td>1.4</td>\n",
+              "      <td>0.2</td>\n",
+              "      <td>Iris-setosa</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>4.7</td>\n",
+              "      <td>3.2</td>\n",
+              "      <td>1.3</td>\n",
+              "      <td>0.2</td>\n",
+              "      <td>Iris-setosa</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>4.6</td>\n",
+              "      <td>3.1</td>\n",
+              "      <td>1.5</td>\n",
+              "      <td>0.2</td>\n",
+              "      <td>Iris-setosa</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>5.0</td>\n",
+              "      <td>3.6</td>\n",
+              "      <td>1.4</td>\n",
+              "      <td>0.2</td>\n",
+              "      <td>Iris-setosa</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "   sepal_len  sepal_wid  petal_len  petal_wid      species\n",
+              "0        5.1        3.5        1.4        0.2  Iris-setosa\n",
+              "1        4.9        3.0        1.4        0.2  Iris-setosa\n",
+              "2        4.7        3.2        1.3        0.2  Iris-setosa\n",
+              "3        4.6        3.1        1.5        0.2  Iris-setosa\n",
+              "4        5.0        3.6        1.4        0.2  Iris-setosa"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 11
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "01DSQ3nnAMQh",
+        "outputId": "acd7c80c-da32-4043-a2ad-9e513a1596a2"
+      },
+      "source": [
+        "# x = data.data  # we have 150 samples with 4 feautures\n",
+        "# y = data.target # we have only the output column.\n",
+        "x = data.drop(columns='species')\n",
+        "y = data['species']\n",
+        "print(x.head())\n",
+        "print(y.head())"
+      ],
+      "execution_count": 12,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "   sepal_len  sepal_wid  petal_len  petal_wid\n",
+            "0        5.1        3.5        1.4        0.2\n",
+            "1        4.9        3.0        1.4        0.2\n",
+            "2        4.7        3.2        1.3        0.2\n",
+            "3        4.6        3.1        1.5        0.2\n",
+            "4        5.0        3.6        1.4        0.2\n",
+            "0    Iris-setosa\n",
+            "1    Iris-setosa\n",
+            "2    Iris-setosa\n",
+            "3    Iris-setosa\n",
+            "4    Iris-setosa\n",
+            "Name: species, dtype: object\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "8JGD4IixASFh"
+      },
+      "source": [
+        "tree_clf = DecisionTreeClassifier() # creating a new instance of the class\n"
+      ],
+      "execution_count": 13,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "yNXF-sbvAZSE"
+      },
+      "source": [
+        "model = tree_clf.fit(x,y) #now fit the data into our classifier first using the method fit()"
+      ],
+      "execution_count": 14,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "zwc6AK8gAcye",
+        "outputId": "95bfd8ae-40a7-4be3-a4c7-454a5267288d"
+      },
+      "source": [
+        "params = {'max_depth':[1,5,10,50], 'min_samples_split': [5,10,100,500]}\n",
+        "GD = GridSearchCV(tree_clf,params, cv=3, n_jobs= -1,  return_train_score=True,verbose=10)\n",
+        "result = GD.fit(x,y)"
+      ],
+      "execution_count": 15,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Fitting 3 folds for each of 16 candidates, totalling 48 fits\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "[Parallel(n_jobs=-1)]: Using backend LokyBackend with 2 concurrent workers.\n",
+            "[Parallel(n_jobs=-1)]: Done   1 tasks      | elapsed:    1.5s\n",
+            "[Parallel(n_jobs=-1)]: Done   4 tasks      | elapsed:    1.6s\n",
+            "[Parallel(n_jobs=-1)]: Done   9 tasks      | elapsed:    1.7s\n",
+            "[Parallel(n_jobs=-1)]: Done  14 tasks      | elapsed:    1.7s\n",
+            "[Parallel(n_jobs=-1)]: Batch computation too fast (0.1840s.) Setting batch_size=2.\n",
+            "[Parallel(n_jobs=-1)]: Batch computation too fast (0.0388s.) Setting batch_size=4.\n",
+            "[Parallel(n_jobs=-1)]: Done  24 tasks      | elapsed:    1.8s\n",
+            "[Parallel(n_jobs=-1)]: Batch computation too fast (0.0444s.) Setting batch_size=8.\n",
+            "[Parallel(n_jobs=-1)]: Done  44 tasks      | elapsed:    1.9s\n",
+            "[Parallel(n_jobs=-1)]: Done  48 out of  48 | elapsed:    1.9s finished\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "80fWo0pYAjG2",
+        "outputId": "8ca2ccbb-7afe-4d0f-b1c6-178cefb0a895"
+      },
+      "source": [
+        "print('Score is :- ',result.best_score_)\n",
+        "print('Best params :- ',result.best_params_)"
+      ],
+      "execution_count": 16,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Score is :-  0.9666666666666667\n",
+            "Best params :-  {'max_depth': 5, 'min_samples_split': 5}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "Xql58m2JAnO-"
+      },
+      "source": [
+        "import graphviz # through this we can render the data to make it a creative pdf file used for visualization purpose\n",
+        "from sklearn.tree import export_graphviz"
+      ],
+      "execution_count": 17,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "7J0I4166Asu4"
+      },
+      "source": [
+        "features = list(x.columns.values)"
+      ],
+      "execution_count": 18,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "JefJty2OAxGa"
+      },
+      "source": [
+        "dot_data = export_graphviz(tree_clf,out_file=None,feature_names=features,class_names='target',filled =True,rounded=True,special_characters=True)\n",
+        "#it will create a dot"
+      ],
+      "execution_count": 19,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "rPL5_FMKA1OQ"
+      },
+      "source": [
+        "graph = graphviz.Source(dot_data)"
+      ],
+      "execution_count": 20,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 35
+        },
+        "id": "te_7Bam-A-lE",
+        "outputId": "0d5e0fad-a36d-44ed-c3fd-0b15f9673d18"
+      },
+      "source": [
+        "graph.render(\"data\") # it will ask you for the file name, it will create the file in the same folder"
+      ],
+      "execution_count": 21,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            },
+            "text/plain": [
+              "'data.pdf'"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 21
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 936
+        },
+        "id": "L24n773GBDlk",
+        "outputId": "e60aeebe-562c-4a25-957a-14681636d298"
+      },
+      "source": [
+        "graph"
+      ],
+      "execution_count": 22,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<graphviz.files.Source at 0x7fa1940d01d0>"
+            ],
+            "image/svg+xml": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n<!-- Generated by graphviz version 2.40.1 (20161225.0304)\n -->\n<!-- Title: Tree Pages: 1 -->\n<svg width=\"813pt\" height=\"671pt\"\n viewBox=\"0.00 0.00 813.00 671.00\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n<g id=\"graph0\" class=\"graph\" transform=\"scale(1 1) rotate(0) translate(4 667)\">\n<title>Tree</title>\n<polygon fill=\"#ffffff\" stroke=\"transparent\" points=\"-4,4 -4,-667 809,-667 809,4 -4,4\"/>\n<!-- 0 -->\n<g id=\"node1\" class=\"node\">\n<title>0</title>\n<path fill=\"#ffffff\" stroke=\"#000000\" d=\"M488.5,-663C488.5,-663 372.5,-663 372.5,-663 366.5,-663 360.5,-657 360.5,-651 360.5,-651 360.5,-592 360.5,-592 360.5,-586 366.5,-580 372.5,-580 372.5,-580 488.5,-580 488.5,-580 494.5,-580 500.5,-586 500.5,-592 500.5,-592 500.5,-651 500.5,-651 500.5,-657 494.5,-663 488.5,-663\"/>\n<text text-anchor=\"start\" x=\"382\" y=\"-647.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">petal_wid ≤ 0.8</text>\n<text text-anchor=\"start\" x=\"392.5\" y=\"-632.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.667</text>\n<text text-anchor=\"start\" x=\"382.5\" y=\"-617.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 150</text>\n<text text-anchor=\"start\" x=\"368.5\" y=\"-602.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [50, 50, 50]</text>\n<text text-anchor=\"start\" x=\"403.5\" y=\"-587.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = t</text>\n</g>\n<!-- 1 -->\n<g id=\"node2\" class=\"node\">\n<title>1</title>\n<path fill=\"#e58139\" stroke=\"#000000\" d=\"M408,-536.5C408,-536.5 309,-536.5 309,-536.5 303,-536.5 297,-530.5 297,-524.5 297,-524.5 297,-480.5 297,-480.5 297,-474.5 303,-468.5 309,-468.5 309,-468.5 408,-468.5 408,-468.5 414,-468.5 420,-474.5 420,-480.5 420,-480.5 420,-524.5 420,-524.5 420,-530.5 414,-536.5 408,-536.5\"/>\n<text text-anchor=\"start\" x=\"329\" y=\"-521.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.0</text>\n<text text-anchor=\"start\" x=\"314.5\" y=\"-506.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 50</text>\n<text text-anchor=\"start\" x=\"305\" y=\"-491.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [50, 0, 0]</text>\n<text text-anchor=\"start\" x=\"331.5\" y=\"-476.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = t</text>\n</g>\n<!-- 0&#45;&gt;1 -->\n<g id=\"edge1\" class=\"edge\">\n<title>0&#45;&gt;1</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M405.3179,-579.8796C398.5983,-568.7735 391.3243,-556.7513 384.5586,-545.5691\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"387.4332,-543.5589 379.262,-536.8149 381.4441,-547.1826 387.4332,-543.5589\"/>\n<text text-anchor=\"middle\" x=\"373.2883\" y=\"-557.3908\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">True</text>\n</g>\n<!-- 2 -->\n<g id=\"node3\" class=\"node\">\n<title>2</title>\n<path fill=\"#ffffff\" stroke=\"#000000\" d=\"M557,-544C557,-544 450,-544 450,-544 444,-544 438,-538 438,-532 438,-532 438,-473 438,-473 438,-467 444,-461 450,-461 450,-461 557,-461 557,-461 563,-461 569,-467 569,-473 569,-473 569,-532 569,-532 569,-538 563,-544 557,-544\"/>\n<text text-anchor=\"start\" x=\"450.5\" y=\"-528.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">petal_wid ≤ 1.75</text>\n<text text-anchor=\"start\" x=\"474\" y=\"-513.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.5</text>\n<text text-anchor=\"start\" x=\"455.5\" y=\"-498.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 100</text>\n<text text-anchor=\"start\" x=\"446\" y=\"-483.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 50, 50]</text>\n<text text-anchor=\"start\" x=\"474.5\" y=\"-468.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = a</text>\n</g>\n<!-- 0&#45;&gt;2 -->\n<g id=\"edge2\" class=\"edge\">\n<title>0&#45;&gt;2</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M456.0319,-579.8796C461.391,-571.1434 467.0979,-561.8404 472.6282,-552.8253\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"475.6135,-554.6522 477.8592,-544.2981 469.6467,-550.9919 475.6135,-554.6522\"/>\n<text text-anchor=\"middle\" x=\"483.6839\" y=\"-564.9101\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">False</text>\n</g>\n<!-- 3 -->\n<g id=\"node4\" class=\"node\">\n<title>3</title>\n<path fill=\"#4de88e\" stroke=\"#000000\" d=\"M451,-425C451,-425 352,-425 352,-425 346,-425 340,-419 340,-413 340,-413 340,-354 340,-354 340,-348 346,-342 352,-342 352,-342 451,-342 451,-342 457,-342 463,-348 463,-354 463,-354 463,-413 463,-413 463,-419 457,-425 451,-425\"/>\n<text text-anchor=\"start\" x=\"350\" y=\"-409.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">petal_len ≤ 4.95</text>\n<text text-anchor=\"start\" x=\"363.5\" y=\"-394.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.168</text>\n<text text-anchor=\"start\" x=\"357.5\" y=\"-379.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 54</text>\n<text text-anchor=\"start\" x=\"348\" y=\"-364.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 49, 5]</text>\n<text text-anchor=\"start\" x=\"372.5\" y=\"-349.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = a</text>\n</g>\n<!-- 2&#45;&gt;3 -->\n<g id=\"edge3\" class=\"edge\">\n<title>2&#45;&gt;3</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M467.8253,-460.8796C460.1057,-451.8733 451.8695,-442.2644 443.9197,-432.9897\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"446.4923,-430.6129 437.3269,-425.2981 441.1775,-435.1684 446.4923,-430.6129\"/>\n</g>\n<!-- 12 -->\n<g id=\"node13\" class=\"node\">\n<title>12</title>\n<path fill=\"#843de6\" stroke=\"#000000\" d=\"M655,-425C655,-425 556,-425 556,-425 550,-425 544,-419 544,-413 544,-413 544,-354 544,-354 544,-348 550,-342 556,-342 556,-342 655,-342 655,-342 661,-342 667,-348 667,-354 667,-354 667,-413 667,-413 667,-419 661,-425 655,-425\"/>\n<text text-anchor=\"start\" x=\"554\" y=\"-409.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">petal_len ≤ 4.85</text>\n<text text-anchor=\"start\" x=\"567.5\" y=\"-394.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.043</text>\n<text text-anchor=\"start\" x=\"561.5\" y=\"-379.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 46</text>\n<text text-anchor=\"start\" x=\"552\" y=\"-364.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 1, 45]</text>\n<text text-anchor=\"start\" x=\"578\" y=\"-349.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = r</text>\n</g>\n<!-- 2&#45;&gt;12 -->\n<g id=\"edge12\" class=\"edge\">\n<title>2&#45;&gt;12</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M539.1747,-460.8796C546.8943,-451.8733 555.1305,-442.2644 563.0803,-432.9897\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"565.8225,-435.1684 569.6731,-425.2981 560.5077,-430.6129 565.8225,-435.1684\"/>\n</g>\n<!-- 4 -->\n<g id=\"node5\" class=\"node\">\n<title>4</title>\n<path fill=\"#3de684\" stroke=\"#000000\" d=\"M248,-306C248,-306 149,-306 149,-306 143,-306 137,-300 137,-294 137,-294 137,-235 137,-235 137,-229 143,-223 149,-223 149,-223 248,-223 248,-223 254,-223 260,-229 260,-235 260,-235 260,-294 260,-294 260,-300 254,-306 248,-306\"/>\n<text text-anchor=\"start\" x=\"145.5\" y=\"-290.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">petal_wid ≤ 1.65</text>\n<text text-anchor=\"start\" x=\"160.5\" y=\"-275.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.041</text>\n<text text-anchor=\"start\" x=\"154.5\" y=\"-260.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 48</text>\n<text text-anchor=\"start\" x=\"145\" y=\"-245.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 47, 1]</text>\n<text text-anchor=\"start\" x=\"169.5\" y=\"-230.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = a</text>\n</g>\n<!-- 3&#45;&gt;4 -->\n<g id=\"edge4\" class=\"edge\">\n<title>3&#45;&gt;4</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M339.7665,-347.3114C317.4248,-334.2145 292.0297,-319.3278 268.9922,-305.823\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"270.6866,-302.7593 260.2896,-300.7215 267.1465,-308.7982 270.6866,-302.7593\"/>\n</g>\n<!-- 7 -->\n<g id=\"node8\" class=\"node\">\n<title>7</title>\n<path fill=\"#c09cf2\" stroke=\"#000000\" d=\"M450.5,-306C450.5,-306 352.5,-306 352.5,-306 346.5,-306 340.5,-300 340.5,-294 340.5,-294 340.5,-235 340.5,-235 340.5,-229 346.5,-223 352.5,-223 352.5,-223 450.5,-223 450.5,-223 456.5,-223 462.5,-229 462.5,-235 462.5,-235 462.5,-294 462.5,-294 462.5,-300 456.5,-306 450.5,-306\"/>\n<text text-anchor=\"start\" x=\"348.5\" y=\"-290.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">petal_wid ≤ 1.55</text>\n<text text-anchor=\"start\" x=\"363.5\" y=\"-275.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.444</text>\n<text text-anchor=\"start\" x=\"362\" y=\"-260.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 6</text>\n<text text-anchor=\"start\" x=\"352\" y=\"-245.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 2, 4]</text>\n<text text-anchor=\"start\" x=\"374\" y=\"-230.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = r</text>\n</g>\n<!-- 3&#45;&gt;7 -->\n<g id=\"edge7\" class=\"edge\">\n<title>3&#45;&gt;7</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M401.5,-341.8796C401.5,-333.6838 401.5,-324.9891 401.5,-316.5013\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"405.0001,-316.298 401.5,-306.2981 398.0001,-316.2981 405.0001,-316.298\"/>\n</g>\n<!-- 5 -->\n<g id=\"node6\" class=\"node\">\n<title>5</title>\n<path fill=\"#39e581\" stroke=\"#000000\" d=\"M111,-179.5C111,-179.5 12,-179.5 12,-179.5 6,-179.5 0,-173.5 0,-167.5 0,-167.5 0,-123.5 0,-123.5 0,-117.5 6,-111.5 12,-111.5 12,-111.5 111,-111.5 111,-111.5 117,-111.5 123,-117.5 123,-123.5 123,-123.5 123,-167.5 123,-167.5 123,-173.5 117,-179.5 111,-179.5\"/>\n<text text-anchor=\"start\" x=\"32\" y=\"-164.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.0</text>\n<text text-anchor=\"start\" x=\"17.5\" y=\"-149.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 47</text>\n<text text-anchor=\"start\" x=\"8\" y=\"-134.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 47, 0]</text>\n<text text-anchor=\"start\" x=\"32.5\" y=\"-119.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = a</text>\n</g>\n<!-- 4&#45;&gt;5 -->\n<g id=\"edge5\" class=\"edge\">\n<title>4&#45;&gt;5</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M150.584,-222.8796C137.0385,-211.1138 122.3092,-198.3197 108.8002,-186.5855\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"110.8503,-183.7303 101.0054,-179.8149 106.2599,-189.015 110.8503,-183.7303\"/>\n</g>\n<!-- 6 -->\n<g id=\"node7\" class=\"node\">\n<title>6</title>\n<path fill=\"#8139e5\" stroke=\"#000000\" d=\"M244,-179.5C244,-179.5 153,-179.5 153,-179.5 147,-179.5 141,-173.5 141,-167.5 141,-167.5 141,-123.5 141,-123.5 141,-117.5 147,-111.5 153,-111.5 153,-111.5 244,-111.5 244,-111.5 250,-111.5 256,-117.5 256,-123.5 256,-123.5 256,-167.5 256,-167.5 256,-173.5 250,-179.5 244,-179.5\"/>\n<text text-anchor=\"start\" x=\"169\" y=\"-164.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.0</text>\n<text text-anchor=\"start\" x=\"159\" y=\"-149.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 1</text>\n<text text-anchor=\"start\" x=\"149\" y=\"-134.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 0, 1]</text>\n<text text-anchor=\"start\" x=\"171\" y=\"-119.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = r</text>\n</g>\n<!-- 4&#45;&gt;6 -->\n<g id=\"edge6\" class=\"edge\">\n<title>4&#45;&gt;6</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M198.5,-222.8796C198.5,-212.2134 198.5,-200.7021 198.5,-189.9015\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"202.0001,-189.8149 198.5,-179.8149 195.0001,-189.815 202.0001,-189.8149\"/>\n</g>\n<!-- 8 -->\n<g id=\"node9\" class=\"node\">\n<title>8</title>\n<path fill=\"#8139e5\" stroke=\"#000000\" d=\"M377,-179.5C377,-179.5 286,-179.5 286,-179.5 280,-179.5 274,-173.5 274,-167.5 274,-167.5 274,-123.5 274,-123.5 274,-117.5 280,-111.5 286,-111.5 286,-111.5 377,-111.5 377,-111.5 383,-111.5 389,-117.5 389,-123.5 389,-123.5 389,-167.5 389,-167.5 389,-173.5 383,-179.5 377,-179.5\"/>\n<text text-anchor=\"start\" x=\"302\" y=\"-164.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.0</text>\n<text text-anchor=\"start\" x=\"292\" y=\"-149.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 3</text>\n<text text-anchor=\"start\" x=\"282\" y=\"-134.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 0, 3]</text>\n<text text-anchor=\"start\" x=\"304\" y=\"-119.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = r</text>\n</g>\n<!-- 7&#45;&gt;8 -->\n<g id=\"edge8\" class=\"edge\">\n<title>7&#45;&gt;8</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M377.0174,-222.8796C370.4844,-211.7735 363.4125,-199.7513 356.8348,-188.5691\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"359.7723,-186.6597 351.6853,-179.8149 353.7387,-190.2089 359.7723,-186.6597\"/>\n</g>\n<!-- 9 -->\n<g id=\"node10\" class=\"node\">\n<title>9</title>\n<path fill=\"#9cf2c0\" stroke=\"#000000\" d=\"M518,-187C518,-187 419,-187 419,-187 413,-187 407,-181 407,-175 407,-175 407,-116 407,-116 407,-110 413,-104 419,-104 419,-104 518,-104 518,-104 524,-104 530,-110 530,-116 530,-116 530,-175 530,-175 530,-181 524,-187 518,-187\"/>\n<text text-anchor=\"start\" x=\"415\" y=\"-171.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">sepal_len ≤ 6.95</text>\n<text text-anchor=\"start\" x=\"430.5\" y=\"-156.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.444</text>\n<text text-anchor=\"start\" x=\"429\" y=\"-141.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 3</text>\n<text text-anchor=\"start\" x=\"419\" y=\"-126.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 2, 1]</text>\n<text text-anchor=\"start\" x=\"439.5\" y=\"-111.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = a</text>\n</g>\n<!-- 7&#45;&gt;9 -->\n<g id=\"edge9\" class=\"edge\">\n<title>7&#45;&gt;9</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M424.9333,-222.8796C429.8013,-214.2335 434.9819,-205.0322 440.0086,-196.1042\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"443.1103,-197.729 444.9666,-187.2981 437.0107,-194.2947 443.1103,-197.729\"/>\n</g>\n<!-- 10 -->\n<g id=\"node11\" class=\"node\">\n<title>10</title>\n<path fill=\"#39e581\" stroke=\"#000000\" d=\"M447,-68C447,-68 356,-68 356,-68 350,-68 344,-62 344,-56 344,-56 344,-12 344,-12 344,-6 350,0 356,0 356,0 447,0 447,0 453,0 459,-6 459,-12 459,-12 459,-56 459,-56 459,-62 453,-68 447,-68\"/>\n<text text-anchor=\"start\" x=\"372\" y=\"-52.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.0</text>\n<text text-anchor=\"start\" x=\"362\" y=\"-37.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 2</text>\n<text text-anchor=\"start\" x=\"352\" y=\"-22.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 2, 0]</text>\n<text text-anchor=\"start\" x=\"372.5\" y=\"-7.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = a</text>\n</g>\n<!-- 9&#45;&gt;10 -->\n<g id=\"edge10\" class=\"edge\">\n<title>9&#45;&gt;10</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M443.5517,-103.9815C438.2499,-95.1585 432.6419,-85.8258 427.3089,-76.9506\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"430.2396,-75.0325 422.0889,-68.2637 424.2395,-78.638 430.2396,-75.0325\"/>\n</g>\n<!-- 11 -->\n<g id=\"node12\" class=\"node\">\n<title>11</title>\n<path fill=\"#8139e5\" stroke=\"#000000\" d=\"M580,-68C580,-68 489,-68 489,-68 483,-68 477,-62 477,-56 477,-56 477,-12 477,-12 477,-6 483,0 489,0 489,0 580,0 580,0 586,0 592,-6 592,-12 592,-12 592,-56 592,-56 592,-62 586,-68 580,-68\"/>\n<text text-anchor=\"start\" x=\"505\" y=\"-52.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.0</text>\n<text text-anchor=\"start\" x=\"495\" y=\"-37.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 1</text>\n<text text-anchor=\"start\" x=\"485\" y=\"-22.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 0, 1]</text>\n<text text-anchor=\"start\" x=\"507\" y=\"-7.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = r</text>\n</g>\n<!-- 9&#45;&gt;11 -->\n<g id=\"edge11\" class=\"edge\">\n<title>9&#45;&gt;11</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M493.076,-103.9815C498.2986,-95.1585 503.8229,-85.8258 509.0763,-76.9506\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"512.1364,-78.652 514.2184,-68.2637 506.1126,-75.0863 512.1364,-78.652\"/>\n</g>\n<!-- 13 -->\n<g id=\"node14\" class=\"node\">\n<title>13</title>\n<path fill=\"#c09cf2\" stroke=\"#000000\" d=\"M652,-306C652,-306 559,-306 559,-306 553,-306 547,-300 547,-294 547,-294 547,-235 547,-235 547,-229 553,-223 559,-223 559,-223 652,-223 652,-223 658,-223 664,-229 664,-235 664,-235 664,-294 664,-294 664,-300 658,-306 652,-306\"/>\n<text text-anchor=\"start\" x=\"555\" y=\"-290.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">sepal_wid ≤ 3.1</text>\n<text text-anchor=\"start\" x=\"567.5\" y=\"-275.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.444</text>\n<text text-anchor=\"start\" x=\"566\" y=\"-260.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 3</text>\n<text text-anchor=\"start\" x=\"556\" y=\"-245.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 1, 2]</text>\n<text text-anchor=\"start\" x=\"578\" y=\"-230.8\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = r</text>\n</g>\n<!-- 12&#45;&gt;13 -->\n<g id=\"edge13\" class=\"edge\">\n<title>12&#45;&gt;13</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M605.5,-341.8796C605.5,-333.6838 605.5,-324.9891 605.5,-316.5013\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"609.0001,-316.298 605.5,-306.2981 602.0001,-316.2981 609.0001,-316.298\"/>\n</g>\n<!-- 16 -->\n<g id=\"node17\" class=\"node\">\n<title>16</title>\n<path fill=\"#8139e5\" stroke=\"#000000\" d=\"M793,-298.5C793,-298.5 694,-298.5 694,-298.5 688,-298.5 682,-292.5 682,-286.5 682,-286.5 682,-242.5 682,-242.5 682,-236.5 688,-230.5 694,-230.5 694,-230.5 793,-230.5 793,-230.5 799,-230.5 805,-236.5 805,-242.5 805,-242.5 805,-286.5 805,-286.5 805,-292.5 799,-298.5 793,-298.5\"/>\n<text text-anchor=\"start\" x=\"714\" y=\"-283.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.0</text>\n<text text-anchor=\"start\" x=\"699.5\" y=\"-268.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 43</text>\n<text text-anchor=\"start\" x=\"690\" y=\"-253.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 0, 43]</text>\n<text text-anchor=\"start\" x=\"716\" y=\"-238.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = r</text>\n</g>\n<!-- 12&#45;&gt;16 -->\n<g id=\"edge16\" class=\"edge\">\n<title>12&#45;&gt;16</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M653.7657,-341.8796C667.4101,-330.1138 682.2469,-317.3197 695.8546,-305.5855\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"698.4187,-307.9961 703.7062,-298.8149 693.8473,-302.6948 698.4187,-307.9961\"/>\n</g>\n<!-- 14 -->\n<g id=\"node15\" class=\"node\">\n<title>14</title>\n<path fill=\"#8139e5\" stroke=\"#000000\" d=\"M651,-179.5C651,-179.5 560,-179.5 560,-179.5 554,-179.5 548,-173.5 548,-167.5 548,-167.5 548,-123.5 548,-123.5 548,-117.5 554,-111.5 560,-111.5 560,-111.5 651,-111.5 651,-111.5 657,-111.5 663,-117.5 663,-123.5 663,-123.5 663,-167.5 663,-167.5 663,-173.5 657,-179.5 651,-179.5\"/>\n<text text-anchor=\"start\" x=\"576\" y=\"-164.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.0</text>\n<text text-anchor=\"start\" x=\"566\" y=\"-149.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 2</text>\n<text text-anchor=\"start\" x=\"556\" y=\"-134.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 0, 2]</text>\n<text text-anchor=\"start\" x=\"578\" y=\"-119.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = r</text>\n</g>\n<!-- 13&#45;&gt;14 -->\n<g id=\"edge14\" class=\"edge\">\n<title>13&#45;&gt;14</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M605.5,-222.8796C605.5,-212.2134 605.5,-200.7021 605.5,-189.9015\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"609.0001,-189.8149 605.5,-179.8149 602.0001,-189.815 609.0001,-189.8149\"/>\n</g>\n<!-- 15 -->\n<g id=\"node16\" class=\"node\">\n<title>15</title>\n<path fill=\"#39e581\" stroke=\"#000000\" d=\"M784,-179.5C784,-179.5 693,-179.5 693,-179.5 687,-179.5 681,-173.5 681,-167.5 681,-167.5 681,-123.5 681,-123.5 681,-117.5 687,-111.5 693,-111.5 693,-111.5 784,-111.5 784,-111.5 790,-111.5 796,-117.5 796,-123.5 796,-123.5 796,-167.5 796,-167.5 796,-173.5 790,-179.5 784,-179.5\"/>\n<text text-anchor=\"start\" x=\"709\" y=\"-164.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">gini = 0.0</text>\n<text text-anchor=\"start\" x=\"699\" y=\"-149.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">samples = 1</text>\n<text text-anchor=\"start\" x=\"689\" y=\"-134.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">value = [0, 1, 0]</text>\n<text text-anchor=\"start\" x=\"709.5\" y=\"-119.3\" font-family=\"Helvetica,sans-Serif\" font-size=\"14.00\" fill=\"#000000\">class = a</text>\n</g>\n<!-- 13&#45;&gt;15 -->\n<g id=\"edge15\" class=\"edge\">\n<title>13&#45;&gt;15</title>\n<path fill=\"none\" stroke=\"#000000\" d=\"M652.0169,-222.8796C665.167,-211.1138 679.4663,-198.3197 692.5809,-186.5855\"/>\n<polygon fill=\"#000000\" stroke=\"#000000\" points=\"695.0294,-189.0913 700.148,-179.8149 690.3618,-183.8746 695.0294,-189.0913\"/>\n</g>\n</g>\n</svg>\n"
+          },
+          "metadata": {},
+          "execution_count": 22
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "pYwApWW5BKbH"
+      },
+      "source": [
+        "prob = tree_clf.predict_proba([[7, 3.3 , 4.5, 1.5]])"
+      ],
+      "execution_count": 23,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "3xyDs2kRBPmT",
+        "outputId": "eae62903-71d4-4df0-857e-eddfec86894e"
+      },
+      "source": [
+        "print(prob)\n"
+      ],
+      "execution_count": 24,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[[0. 1. 0.]]\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
